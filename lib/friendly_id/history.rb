@@ -76,6 +76,11 @@ method.
           :class_name => Slug.to_s
         }
         after_save :create_slug
+
+        def self.globalized?
+          respond_to?(:translation_class)
+        end
+
       end
     end
 
@@ -83,7 +88,11 @@ method.
       include ::FriendlyId::FinderMethods
 
       def exists_by_friendly_id?(id)
-        joins(:slugs, :translations).where(translation_class.arel_table[friendly_id_config.query_field].eq(id)).exists? || joins(:slugs).where(slug_history_clause(id)).exists?
+        if globalized?
+          joins(:slugs, :translations).where(translation_class.arel_table[friendly_id_config.query_field].eq(id)).exists? || joins(:slugs).where(slug_history_clause(id)).exists?
+        else
+          joins(:slugs).where(arel_table[friendly_id_config.query_field].eq(id)).exists? || joins(:slugs).where(slug_history_clause(id)).exists?
+        end
       end
 
       private
@@ -118,12 +127,16 @@ method.
     end
 
     def create_slug
-      if self.translations.size > 1
-        self.translations.map(&:locale).each do |locale|
-          ::Globalize.with_locale(locale) { super_create_slug(locale) }
+      if self.class.globalized?
+        if self.translations.size > 1
+          self.translations.map(&:locale).each do |locale|
+            ::Globalize.with_locale(locale) { super_create_slug(locale) }
+          end
+        else
+          ::Globalize.with_locale(::Globalize.locale) { super_create_slug(locale) }
         end
       else
-        ::Globalize.with_locale(::Globalize.locale) { super_create_slug(locale) }
+        super_create_slug(nil)
       end
     end
 
