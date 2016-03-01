@@ -90,7 +90,7 @@ current locale:
     end
 
     def should_generate_new_friendly_id?
-      translation_for(::Globalize.locale).send(friendly_id_config.slug_column).nil?
+      translation_for(::Globalize.locale).send(friendly_id_config.slug_column).nil? || self.class.included_modules.include?(FriendlyId::History)
     end
 
     def set_slug(normalized_slug = nil)
