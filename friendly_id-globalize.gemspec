@@ -4,9 +4,9 @@ require File.expand_path('../lib/friendly_id/globalize/version', __FILE__)
 Gem::Specification.new do |s|
   s.name          = 'friendly_id-globalize'
   s.version       = FriendlyId::Globalize::VERSION
-  s.authors       = ['Norman Clarke', 'Philip Arndt']
+  s.authors       = ['Norman Clarke', 'Philip Arndt', 'Florian Eck']
   s.email         = ['norman@njclarke.com', 'p@arndt.io']
-  s.homepage      = 'http://github.com/norman/friendly_id-globalize'
+  s.homepage      = 'http://github.com/florianeck/friendly_id-globalize'
   s.summary       = 'Globalize support for FriendlyId.'
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test}/*`.split("\n")
