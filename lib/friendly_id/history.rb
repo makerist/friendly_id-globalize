@@ -107,7 +107,12 @@ method.
       end
 
       def slug_history_clause(id)
-        Slug.arel_table[:sluggable_type].eq(base_class.to_s).and(Slug.arel_table[:slug].eq(id)).and(Slug.arel_table[:locale].eq(::Globalize.locale))
+        query = Slug.arel_table[:sluggable_type].eq(base_class.to_s).and(Slug.arel_table[:slug].eq(id))
+        if globalized?
+          return query.and(Slug.arel_table[:locale].eq(::Globalize.locale))
+        else
+          return query
+        end
       end
     end
 
